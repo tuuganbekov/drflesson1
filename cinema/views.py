@@ -1,6 +1,11 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
+
+
+from .models import Movie, Genre
+from .serializers import MovieSerializer, GenreSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -30,3 +35,45 @@ def reverse_view(request):
         "is_palindrome": True if text.lower() == text[::-1].lower() else False
     }
     return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def reverse_number(request):
+    num = request.data.get('number')
+    if num < 0:
+        return Response({
+            "reverse": int(str(abs(num))[::-1]) * (-1)
+        }, status=status.HTTP_200_OK)
+    return Response({"reverse": int(str(num)[::-1])})
+
+
+@api_view(['GET', 'POST'])
+@parser_classes([MultiPartParser, FormParser])
+def movies_list(request):
+    if request.method == 'GET':
+        movies = Movie.objects.all()
+        serializer = MovieSerializer(movies, many=True)
+        return Response({
+            "movies": serializer.data
+        }, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        print("REQUEST FILES: ", request.FILES)
+        serializer = MovieSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def genre_list(request):
+    if request.method == "GET":
+        genres = Genre.objects.all()
+        serializer = GenreSerializer(genres, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == "POST":
+        serializer = GenreSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
