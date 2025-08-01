@@ -1,6 +1,15 @@
 from django.urls import path
 
-from .views import hello_api, reverse_view, reverse_number, movies_list, genre_list
+from .views import (
+    hello_api,
+    reverse_view, 
+    reverse_number, 
+    movies_list, 
+    genre_list,
+    genre_detail,
+    genre_update,
+    genre_delete
+)
 
 
 urlpatterns = [
@@ -9,5 +18,7 @@ urlpatterns = [
     path("cinema/reverse-number/", reverse_number),
     path('cinema/movies/', movies_list),
     path('cinema/genres/', genre_list),
-
+    path('cinema/genres/<int:pk>/', genre_detail),
+    path('cinema/genres/update/<int:pk>/', genre_update),
+    path('cinema/genres/delete/<int:pk>/', genre_delete),
 ]

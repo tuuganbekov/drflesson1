@@ -77,3 +77,46 @@ def genre_list(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def genre_detail(request, pk):
+    try:
+        genre = Genre.objects.get(id=pk)
+        serializer = GenreSerializer(genre)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Genre.DoesNotExist:
+        return Response({
+            "message": f"Жанр с ID {pk} не существует"
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+def genre_update(request, pk):
+    try:
+        genre = Genre.objects.get(id=pk)
+        serializer = GenreSerializer(genre, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Genre.DoesNotExist:
+        return Response({
+            "message": f"Жанр с ID {pk} не существует"
+        }, status=status.HTTP_404_NOT_FOUND)
+    
+
+@api_view(['DELETE'])
+def genre_delete(request, pk):
+    try:
+        genre = Genre.objects.get(id=pk)
+        genre.delete()
+        return Response(
+            {"message": "Успешно удалено"}, 
+            status=status.HTTP_204_NO_CONTENT
+        )
+    except Genre.DoesNotExist:
+        return Response(
+            {"message": f"Жанр с ID {pk} не существует"}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
