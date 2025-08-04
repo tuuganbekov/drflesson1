@@ -5,7 +5,14 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 
 from .models import Movie, Genre
-from .serializers import MovieSerializer, GenreSerializer
+from .serializers import MovieModelSerializer, GenreSerializer, MovieSerializer, UserSerializer
+
+
+@api_view(['POST'])
+def user_register(request):
+    serializer = UserSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response({"message": "Регистрация прошла успешно"})
 
 
 @api_view(['GET', 'POST'])
@@ -83,7 +90,9 @@ def genre_list(request):
 def genre_detail(request, pk):
     try:
         genre = Genre.objects.get(id=pk)
+        print(f"GENRE: {genre}, type: {type(genre)}")
         serializer = GenreSerializer(genre)
+        print(f"SERIALIZER DATA: {serializer.data}")
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Genre.DoesNotExist:
         return Response({
@@ -120,3 +129,5 @@ def genre_delete(request, pk):
             {"message": f"Жанр с ID {pk} не существует"}, 
             status=status.HTTP_404_NOT_FOUND
         )
+    
+

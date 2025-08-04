@@ -8,7 +8,8 @@ from .views import (
     genre_list,
     genre_detail,
     genre_update,
-    genre_delete
+    genre_delete,
+    user_register
 )
 
 
@@ -21,4 +22,5 @@ urlpatterns = [
     path('cinema/genres/<int:pk>/', genre_detail),
     path('cinema/genres/update/<int:pk>/', genre_update),
     path('cinema/genres/delete/<int:pk>/', genre_delete),
+    path('cinema/registration/', user_register)
 ]

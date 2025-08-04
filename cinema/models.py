@@ -12,7 +12,7 @@ class Genre(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True, blank=True``)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
     image = models.ImageField(upload_to="movies/")
     start_date = models.DateField()
     end_date = models.DateField()
